@@ -1,5 +1,11 @@
 package com.elecora.app
 
+import android.graphics.Bitmap
+import android.graphics.pdf.PdfRenderer
+import android.os.ParcelFileDescriptor
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
+import java.io.File
 import android.os.Bundle
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -911,30 +917,121 @@ fun BreakerContent() {
     }
 }
 
+fun renderFirstPdfPage(
+    uri: Uri,
+    context: android.content.Context
+): Pair<Bitmap?, Int> {
+
+    return try {
+
+        val file = File(
+            context.cacheDir,
+            "elecora_preview.pdf"
+        )
+
+        context.contentResolver.openInputStream(uri)?.use { input ->
+
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        val descriptor =
+            ParcelFileDescriptor.open(
+                file,
+                ParcelFileDescriptor.MODE_READ_ONLY
+            )
+
+        val renderer = PdfRenderer(descriptor)
+
+        val pageCount = renderer.pageCount
+
+        if (pageCount == 0) {
+            renderer.close()
+            descriptor.close()
+            return null to 0
+        }
+
+        val page = renderer.openPage(0)
+
+        val width = 1200
+        val height =
+            (width.toFloat() * page.height / page.width)
+                .toInt()
+
+        val bitmap = Bitmap.createBitmap(
+            width,
+            height,
+            Bitmap.Config.ARGB_8888
+        )
+
+        bitmap.eraseColor(
+            android.graphics.Color.WHITE
+        )
+
+        page.render(
+            bitmap,
+            null,
+            null,
+            PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
+        )
+
+        page.close()
+        renderer.close()
+        descriptor.close()
+
+        bitmap to pageCount
+
+    } catch (e: Exception) {
+
+        null to 0
+    }
+}
 @Composable
 fun PdfContent() {
+
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     var selectedPdf by remember {
         mutableStateOf<Uri?>(null)
     }
 
-    val pdfLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-
-        if (uri != null) {
-            selectedPdf = uri
-
-            ElecoraHistory.add(
-                HistoryItem(
-                    icon = "📄",
-                    title = "Analyse PDF",
-                    result = "PDF sélectionné",
-                    detail = "Plan électrique prêt pour analyse"
-                )
-            )
-        }
+    var previewBitmap by remember {
+        mutableStateOf<Bitmap?>(null)
     }
+
+    var pageCount by remember {
+        mutableStateOf(0)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    val pdfLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocument()
+        ) { uri: Uri? ->
+
+            if (uri != null) {
+
+                selectedPdf = uri
+                error = null
+
+                val result =
+                    renderFirstPdfPage(
+                        uri = uri,
+                        context = context
+                    )
+
+                previewBitmap = result.first
+                pageCount = result.second
+
+                if (result.second == 0) {
+                    error = "Impossible de lire ce fichier PDF."
+                }
+            }
+        }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -947,16 +1044,18 @@ fun PdfContent() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(22.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Text(
                 text = "📄",
-                fontSize = 55.sp
+                fontSize = 50.sp
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
 
             Text(
                 text = "Analyse d'un plan électrique",
@@ -966,22 +1065,28 @@ fun PdfContent() {
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
 
             Text(
-                text = "Sélectionnez un plan électrique au format PDF.",
+                text = "Sélectionnez votre plan PDF pour commencer.",
                 color = Gray,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
 
             Button(
                 onClick = {
+
                     pdfLauncher.launch(
                         arrayOf("application/pdf")
                     )
+
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
@@ -990,7 +1095,7 @@ fun PdfContent() {
             ) {
 
                 Text(
-                    text = "📂 Choisir un fichier PDF",
+                    text = "📂 Choisir un PDF",
                     color = White,
                     fontWeight = FontWeight.Bold
                 )
@@ -998,19 +1103,72 @@ fun PdfContent() {
 
             selectedPdf?.let {
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ResultCard(
-                    title = "Fichier sélectionné",
-                    value = "✓ PDF prêt",
-                    description = "Le plan est chargé et prêt pour l'étape d'analyse."
+                Spacer(
+                    modifier = Modifier.height(15.dp)
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "✓ PDF chargé",
+                    color = Green,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                if (pageCount > 0) {
+
+                    Spacer(
+                        modifier = Modifier.height(5.dp)
+                    )
+
+                    Text(
+                        text = "$pageCount page(s)",
+                        color = Gray,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            previewBitmap?.let { bitmap ->
+
+                Spacer(
+                    modifier = Modifier.height(18.dp)
+                )
+
+                Text(
+                    text = "Aperçu de la première page",
+                    color = White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White
+                    )
+                ) {
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Aperçu du plan PDF",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.height(15.dp)
+                )
 
                 Button(
                     onClick = {
-                        // Analyse intelligente du PDF — prochaine étape
+                        // Analyse intelligente — Step 6B
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -1025,7 +1183,23 @@ fun PdfContent() {
                     )
                 }
             }
+
+            error?.let {
+
+                Spacer(
+                    modifier = Modifier.height(10.dp)
+                )
+
+                Text(
+                    text = it,
+                    color = Orange,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
+    }
+}
     }
 }
 
