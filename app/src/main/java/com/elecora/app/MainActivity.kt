@@ -34,6 +34,10 @@ import com.elecora.app.data.HistoryItem
 import com.elecora.app.pdf.PdfAnalyzer
 import java.io.File
 
+// ============================================================
+// ELECORA COLORS
+// ============================================================
+
 val Navy = Color(0xFF06182B)
 val Navy2 = Color(0xFF0A2340)
 val CardBlue = Color(0xFF0D3155)
@@ -44,6 +48,10 @@ val Orange = Color(0xFFFFB31A)
 val Purple = Color(0xFF8B5CF6)
 val White = Color(0xFFF5FAFF)
 val Gray = Color(0xFF9FB3C8)
+
+// ============================================================
+// MAIN ACTIVITY
+// ============================================================
 
 class MainActivity : ComponentActivity() {
 
@@ -56,13 +64,35 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// ============================================================
+// APP
+// ============================================================
+
 @Composable
 fun ElecoraApp() {
 
-    var currentPage by remember { mutableStateOf("Accueil") }
-    var selectedTool by remember { mutableStateOf<String?>(null) }
+    var currentPage by remember {
+        mutableStateOf("Accueil")
+    }
 
-    MaterialTheme {
+    var selectedTool by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    MaterialTheme(
+        colorScheme = darkColorScheme(
+            primary = ElectricBlue,
+            secondary = Cyan,
+            background = Navy,
+            surface = Navy2,
+            surfaceVariant = CardBlue,
+            onPrimary = Navy,
+            onSecondary = Navy,
+            onBackground = White,
+            onSurface = White,
+            onSurfaceVariant = White
+        )
+    ) {
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -82,6 +112,7 @@ fun ElecoraApp() {
 
                 Scaffold(
                     containerColor = Navy,
+
                     bottomBar = {
                         BottomNavigationBar(
                             selected = currentPage,
@@ -90,6 +121,7 @@ fun ElecoraApp() {
                             }
                         )
                     }
+
                 ) { padding ->
 
                     Box(
@@ -100,21 +132,29 @@ fun ElecoraApp() {
 
                         when (currentPage) {
 
-                            "Accueil" -> HomeScreen(
-                                onToolClick = {
-                                    selectedTool = it
-                                }
-                            )
+                            "Accueil" -> {
+                                HomeScreen(
+                                    onToolClick = {
+                                        selectedTool = it
+                                    }
+                                )
+                            }
 
-                            "Outils" -> ToolsScreen(
-                                onToolClick = {
-                                    selectedTool = it
-                                }
-                            )
+                            "Outils" -> {
+                                ToolsScreen(
+                                    onToolClick = {
+                                        selectedTool = it
+                                    }
+                                )
+                            }
 
-                            "Historique" -> HistoryScreen()
+                            "Historique" -> {
+                                HistoryScreen()
+                            }
 
-                            "Profil" -> ProfileScreen()
+                            "Profil" -> {
+                                ProfileScreen()
+                            }
                         }
                     }
                 }
@@ -122,6 +162,10 @@ fun ElecoraApp() {
         }
     }
 }
+
+// ============================================================
+// HOME
+// ============================================================
 
 @Composable
 fun HomeScreen(
@@ -133,17 +177,20 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Navy)
             .padding(18.dp),
+
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
 
         item {
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
 
             Text(
                 text = "⚡ Elecora",
                 color = White,
-                fontSize = 28.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
 
@@ -174,14 +221,20 @@ fun HomeScreen(
                         fontSize = 14.sp
                     )
 
+                    Spacer(
+                        modifier = Modifier.height(4.dp)
+                    )
+
                     Text(
-                        text = "Technicien électricien",
+                        text = "Votre assistant électrique",
                         color = White,
                         fontSize = 21.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
 
                     Text(
                         text = "Calculer • Vérifier • Dimensionner",
@@ -220,7 +273,7 @@ fun HomeScreen(
             ToolCard(
                 icon = "🔌",
                 title = "Section de câble",
-                description = "Déterminer la section",
+                description = "Déterminer la section du conducteur",
                 color = Green,
                 onClick = {
                     onToolClick("Section de câble")
@@ -233,7 +286,7 @@ fun HomeScreen(
             ToolCard(
                 icon = "🛡️",
                 title = "Calibre disjoncteur",
-                description = "Choisir la protection",
+                description = "Choisir le calibre adapté",
                 color = Orange,
                 onClick = {
                     onToolClick("Calibre disjoncteur")
@@ -256,21 +309,22 @@ fun HomeScreen(
 
         item {
 
-            Text(
-                text = "⚠️ Les résultats sont destinés au pré-dimensionnement et doivent être vérifiés selon les normes et les conditions réelles.",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Color(0xFF30250D),
-                        RoundedCornerShape(16.dp)
-                    )
-                    .padding(15.dp),
-                color = Orange,
-                fontSize = 11.sp
+            InfoCard(
+                title = "À propos d'Elecora",
+                text = "Un assistant destiné au pré-dimensionnement des installations électriques du bâtiment."
             )
+        }
+
+        item {
+
+            WarningCard()
         }
     }
 }
+
+// ============================================================
+// TOOL CARD
+// ============================================================
 
 @Composable
 fun ToolCard(
@@ -287,7 +341,9 @@ fun ToolCard(
             .clickable {
                 onClick()
             },
+
         shape = RoundedCornerShape(20.dp),
+
         colors = CardDefaults.cardColors(
             containerColor = CardBlue
         )
@@ -300,21 +356,24 @@ fun ToolCard(
 
             Box(
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(52.dp)
                     .background(
                         color.copy(alpha = 0.15f),
-                        RoundedCornerShape(15.dp)
+                        RoundedCornerShape(16.dp)
                     ),
+
                 contentAlignment = Alignment.Center
             ) {
 
                 Text(
                     text = icon,
-                    fontSize = 24.sp
+                    fontSize = 25.sp
                 )
             }
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(
+                modifier = Modifier.width(14.dp)
+            )
 
             Column(
                 modifier = Modifier.weight(1f)
@@ -327,6 +386,10 @@ fun ToolCard(
                     fontWeight = FontWeight.Bold
                 )
 
+                Spacer(
+                    modifier = Modifier.height(3.dp)
+                )
+
                 Text(
                     text = description,
                     color = Gray,
@@ -337,11 +400,15 @@ fun ToolCard(
             Text(
                 text = "›",
                 color = color,
-                fontSize = 28.sp
+                fontSize = 30.sp
             )
         }
     }
 }
+
+// ============================================================
+// BOTTOM NAVIGATION
+// ============================================================
 
 @Composable
 fun BottomNavigationBar(
@@ -358,14 +425,26 @@ fun BottomNavigationBar(
             onClick = {
                 onSelected("Accueil")
             },
+
             icon = {
                 Text(
-                    "⌂",
+                    text = "⌂",
+                    color = if (selected == "Accueil")
+                        ElectricBlue
+                    else
+                        Gray,
                     fontSize = 22.sp
                 )
             },
+
             label = {
-                Text("Accueil")
+                Text(
+                    text = "Accueil",
+                    color = if (selected == "Accueil")
+                        ElectricBlue
+                    else
+                        Gray
+                )
             }
         )
 
@@ -374,14 +453,26 @@ fun BottomNavigationBar(
             onClick = {
                 onSelected("Outils")
             },
+
             icon = {
                 Text(
-                    "⚙",
+                    text = "⚙",
+                    color = if (selected == "Outils")
+                        ElectricBlue
+                    else
+                        Gray,
                     fontSize = 20.sp
                 )
             },
+
             label = {
-                Text("Outils")
+                Text(
+                    text = "Outils",
+                    color = if (selected == "Outils")
+                        ElectricBlue
+                    else
+                        Gray
+                )
             }
         )
 
@@ -390,14 +481,26 @@ fun BottomNavigationBar(
             onClick = {
                 onSelected("Historique")
             },
+
             icon = {
                 Text(
-                    "◷",
+                    text = "◷",
+                    color = if (selected == "Historique")
+                        ElectricBlue
+                    else
+                        Gray,
                     fontSize = 22.sp
                 )
             },
+
             label = {
-                Text("Historique")
+                Text(
+                    text = "Historique",
+                    color = if (selected == "Historique")
+                        ElectricBlue
+                    else
+                        Gray
+                )
             }
         )
 
@@ -406,18 +509,34 @@ fun BottomNavigationBar(
             onClick = {
                 onSelected("Profil")
             },
+
             icon = {
                 Text(
-                    "●",
+                    text = "●",
+                    color = if (selected == "Profil")
+                        ElectricBlue
+                    else
+                        Gray,
                     fontSize = 18.sp
                 )
             },
+
             label = {
-                Text("Profil")
+                Text(
+                    text = "Profil",
+                    color = if (selected == "Profil")
+                        ElectricBlue
+                    else
+                        Gray
+                )
             }
         )
     }
 }
+
+// ============================================================
+// TOOLS SCREEN
+// ============================================================
 
 @Composable
 fun ToolsScreen(
@@ -429,12 +548,15 @@ fun ToolsScreen(
             .fillMaxSize()
             .background(Navy)
             .padding(18.dp),
+
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
 
         item {
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
 
             Text(
                 text = "Outils",
@@ -494,7 +616,7 @@ fun ToolsScreen(
             ToolCard(
                 icon = "📄",
                 title = "Analyse PDF",
-                description = "Préparation de l'analyse des plans",
+                description = "Analyse automatique du plan",
                 color = Purple,
                 onClick = {
                     onToolClick("Analyse PDF")
@@ -503,6 +625,10 @@ fun ToolsScreen(
         }
     }
 }
+
+// ============================================================
+// TOOL SCREEN
+// ============================================================
 
 @Composable
 fun ToolScreen(
@@ -519,12 +645,15 @@ fun ToolScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = 18.dp),
+
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
             item {
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(
+                    modifier = Modifier.height(5.dp)
+                )
 
                 TextButton(
                     onClick = onBack
@@ -532,7 +661,8 @@ fun ToolScreen(
 
                     Text(
                         text = "← Retour",
-                        color = Cyan
+                        color = Cyan,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -564,26 +694,19 @@ fun ToolScreen(
 
             item {
 
-                Spacer(modifier = Modifier.height(15.dp))
+                WarningCard()
 
-                Text(
-                    text = "⚠️ Vérifiez les résultats selon les normes en vigueur et les conditions réelles de l'installation.",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            Color(0xFF30250D),
-                            RoundedCornerShape(16.dp)
-                        )
-                        .padding(15.dp),
-                    color = Orange,
-                    fontSize = 11.sp
+                Spacer(
+                    modifier = Modifier.height(20.dp)
                 )
-
-                Spacer(modifier = Modifier.height(25.dp))
             }
         }
     }
 }
+
+// ============================================================
+// INPUT
+// ============================================================
 
 @Composable
 fun ElecoraInput(
@@ -596,16 +719,46 @@ fun ElecoraInput(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
+
         modifier = Modifier.fillMaxWidth(),
+
         label = {
-            Text(label)
+            Text(
+                text = label,
+                color = Gray
+            )
         },
+
         placeholder = {
-            Text(placeholder)
+            Text(
+                text = placeholder,
+                color = Gray
+            )
         },
-        singleLine = true
+
+        singleLine = true,
+
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = White,
+            unfocusedTextColor = White,
+
+            focusedBorderColor = ElectricBlue,
+            unfocusedBorderColor = Gray,
+
+            focusedLabelColor = ElectricBlue,
+            unfocusedLabelColor = Gray,
+
+            cursorColor = ElectricBlue,
+
+            focusedPlaceholderColor = Gray,
+            unfocusedPlaceholderColor = Gray
+        )
     )
 }
+
+// ============================================================
+// CHOICE ROW
+// ============================================================
 
 @Composable
 fun ChoiceRow(
@@ -627,7 +780,7 @@ fun ChoiceRow(
         )
 
         Spacer(
-            modifier = Modifier.height(6.dp)
+            modifier = Modifier.height(7.dp)
         )
 
         Row(
@@ -637,21 +790,45 @@ fun ChoiceRow(
             FilterChip(
                 selected = selectedFirst,
                 onClick = onFirst,
+
                 label = {
-                    Text(first)
-                }
+                    Text(
+                        text = first
+                    )
+                },
+
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = ElectricBlue,
+                    containerColor = CardBlue,
+                    selectedLabelColor = Navy,
+                    labelColor = White
+                )
             )
 
             FilterChip(
                 selected = !selectedFirst,
                 onClick = onSecond,
+
                 label = {
-                    Text(second)
-                }
+                    Text(
+                        text = second
+                    )
+                },
+
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = ElectricBlue,
+                    containerColor = CardBlue,
+                    selectedLabelColor = Navy,
+                    labelColor = White
+                )
             )
         }
     }
 }
+
+// ============================================================
+// VOLTAGE DROP
+// ============================================================
 
 @Composable
 fun VoltageDropContent() {
@@ -669,12 +846,22 @@ fun VoltageDropContent() {
         mutableStateOf(Conductor.COPPER)
     }
 
-    var result by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var result by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+
+        SectionTitle(
+            icon = "⚡",
+            title = "Calcul de chute de tension"
+        )
 
         ChoiceRow(
             title = "Phase",
@@ -705,32 +892,42 @@ fun VoltageDropContent() {
         ElecoraInput(
             label = "Courant (A)",
             value = current,
-            onValueChange = { current = it },
+            onValueChange = {
+                current = it
+            },
             placeholder = "Ex: 20"
         )
 
         ElecoraInput(
             label = "Longueur (m)",
             value = length,
-            onValueChange = { length = it },
+            onValueChange = {
+                length = it
+            },
             placeholder = "Ex: 30"
         )
 
         ElecoraInput(
             label = "Section (mm²)",
             value = section,
-            onValueChange = { section = it },
+            onValueChange = {
+                section = it
+            },
             placeholder = "Ex: 4"
         )
 
         ElecoraInput(
             label = "Cos φ",
             value = cosPhi,
-            onValueChange = { cosPhi = it },
+            onValueChange = {
+                cosPhi = it
+            },
             placeholder = "Ex: 0.90"
         )
 
-        Button(
+        PrimaryButton(
+            text = "⚡ Calculer la chute",
+            color = ElectricBlue,
             onClick = {
 
                 val calculation =
@@ -767,27 +964,10 @@ fun VoltageDropContent() {
                         )
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ElectricBlue
-            )
-        ) {
+            }
+        )
 
-            Text(
-                text = "Calculer",
-                color = Navy,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        error?.let {
-
-            Text(
-                text = it,
-                color = Orange
-            )
-        }
+        ErrorText(error)
 
         result?.let {
 
@@ -800,50 +980,119 @@ fun VoltageDropContent() {
     }
 }
 
+// ============================================================
+// CABLE SECTION
+// ============================================================
+
 @Composable
 fun CableSectionContent() {
 
-    var current by remember { mutableStateOf("") }
-    var length by remember { mutableStateOf("") }
-    var cosPhi by remember { mutableStateOf("0.90") }
-    var maxDrop by remember { mutableStateOf("5") }
+    var current by remember {
+        mutableStateOf("")
+    }
 
-    var result by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var length by remember {
+        mutableStateOf("")
+    }
+
+    var cosPhi by remember {
+        mutableStateOf("0.90")
+    }
+
+    var maxDrop by remember {
+        mutableStateOf("5")
+    }
+
+    var phase by remember {
+        mutableStateOf(PhaseType.SINGLE)
+    }
+
+    var material by remember {
+        mutableStateOf(Conductor.COPPER)
+    }
+
+    var result by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
+        SectionTitle(
+            icon = "🔌",
+            title = "Dimensionnement du câble"
+        )
+
+        ChoiceRow(
+            title = "Phase",
+            first = "Monophasé",
+            second = "Triphasé",
+            selectedFirst = phase == PhaseType.SINGLE,
+            onFirst = {
+                phase = PhaseType.SINGLE
+            },
+            onSecond = {
+                phase = PhaseType.THREE
+            }
+        )
+
+        ChoiceRow(
+            title = "Conducteur",
+            first = "Cuivre",
+            second = "Aluminium",
+            selectedFirst = material == Conductor.COPPER,
+            onFirst = {
+                material = Conductor.COPPER
+            },
+            onSecond = {
+                material = Conductor.ALUMINIUM
+            }
+        )
+
         ElecoraInput(
             label = "Courant (A)",
             value = current,
-            onValueChange = { current = it },
+            onValueChange = {
+                current = it
+            },
             placeholder = "Ex: 25"
         )
 
         ElecoraInput(
             label = "Longueur (m)",
             value = length,
-            onValueChange = { length = it },
+            onValueChange = {
+                length = it
+            },
             placeholder = "Ex: 40"
         )
 
         ElecoraInput(
             label = "Cos φ",
             value = cosPhi,
-            onValueChange = { cosPhi = it },
+            onValueChange = {
+                cosPhi = it
+            },
             placeholder = "Ex: 0.90"
         )
 
         ElecoraInput(
             label = "Chute maximale (%)",
             value = maxDrop,
-            onValueChange = { maxDrop = it },
+            onValueChange = {
+                maxDrop = it
+            },
             placeholder = "Ex: 5"
         )
 
-        Button(
+        PrimaryButton(
+            text = "🔌 Dimensionner le câble",
+            color = Green,
             onClick = {
 
                 val calculation =
@@ -852,8 +1101,8 @@ fun CableSectionContent() {
                         length = length.toDoubleOrNull(),
                         cosPhi = cosPhi.toDoubleOrNull(),
                         maxDrop = maxDrop.toDoubleOrNull(),
-                        phase = PhaseType.SINGLE,
-                        material = Conductor.COPPER
+                        phase = phase,
+                        material = material
                     )
 
                 val calculated = calculation.first
@@ -862,41 +1111,27 @@ fun CableSectionContent() {
 
                 if (calculated != null) {
 
-                    result = "${calculated.section} mm²"
+                    result =
+                        "${calculated.section} mm²"
 
                     ElecoraHistory.add(
                         HistoryItem(
                             icon = "🔌",
                             title = "Section de câble",
-                            result = "${calculated.section} mm²",
-                            detail = "ΔU = %.2f %%"
-                                .format(
-                                    calculated.voltageDropPercent
-                                )
+                            result =
+                                "${calculated.section} mm²",
+                            detail =
+                                "ΔU = %.2f %%"
+                                    .format(
+                                        calculated.voltageDropPercent
+                                    )
                         )
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Green
-            )
-        ) {
+            }
+        )
 
-            Text(
-                text = "Dimensionner",
-                color = Navy,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        error?.let {
-
-            Text(
-                text = it,
-                color = Orange
-            )
-        }
+        ErrorText(error)
 
         result?.let {
 
@@ -909,34 +1144,59 @@ fun CableSectionContent() {
     }
 }
 
+// ============================================================
+// BREAKER
+// ============================================================
+
 @Composable
 fun BreakerContent() {
 
-    var current by remember { mutableStateOf("") }
-    var cableAmpacity by remember { mutableStateOf("") }
+    var current by remember {
+        mutableStateOf("")
+    }
 
-    var result by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var cableAmpacity by remember {
+        mutableStateOf("")
+    }
+
+    var result by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
+        SectionTitle(
+            icon = "🛡️",
+            title = "Calibre du disjoncteur"
+        )
+
         ElecoraInput(
             label = "Courant Ib (A)",
             value = current,
-            onValueChange = { current = it },
+            onValueChange = {
+                current = it
+            },
             placeholder = "Ex: 27"
         )
 
         ElecoraInput(
             label = "Courant admissible Iz (A)",
             value = cableAmpacity,
-            onValueChange = { cableAmpacity = it },
+            onValueChange = {
+                cableAmpacity = it
+            },
             placeholder = "Ex: 32"
         )
 
-        Button(
+        PrimaryButton(
+            text = "🛡️ Calculer le calibre",
+            color = Orange,
             onClick = {
 
                 val calculation =
@@ -952,38 +1212,23 @@ fun BreakerContent() {
 
                 if (calculated != null) {
 
-                    result = "${calculated.rating} A"
+                    result =
+                        "${calculated.rating} A"
 
                     ElecoraHistory.add(
                         HistoryItem(
                             icon = "🛡️",
                             title = "Calibre disjoncteur",
-                            result = "${calculated.rating} A",
+                            result =
+                                "${calculated.rating} A",
                             detail = calculated.note
                         )
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Orange
-            )
-        ) {
+            }
+        )
 
-            Text(
-                text = "Calculer le calibre",
-                color = Navy,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        error?.let {
-
-            Text(
-                text = it,
-                color = Orange
-            )
-        }
+        ErrorText(error)
 
         result?.let {
 
@@ -996,6 +1241,10 @@ fun BreakerContent() {
         }
     }
 }
+
+// ============================================================
+// PDF RENDER
+// ============================================================
 
 fun renderFirstPdfPage(
     uri: Uri,
@@ -1080,6 +1329,10 @@ fun renderFirstPdfPage(
     }
 }
 
+// ============================================================
+// PDF CONTENT
+// ============================================================
+
 @Composable
 fun PdfContent() {
 
@@ -1150,6 +1403,7 @@ fun PdfContent() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
+
             horizontalAlignment =
                 Alignment.CenterHorizontally
         ) {
@@ -1157,10 +1411,6 @@ fun PdfContent() {
             Text(
                 text = "📄",
                 fontSize = 50.sp
-            )
-
-            Spacer(
-                modifier = Modifier.height(10.dp)
             )
 
             Text(
@@ -1187,26 +1437,16 @@ fun PdfContent() {
                 modifier = Modifier.height(16.dp)
             )
 
-            Button(
+            PrimaryButton(
+                text = "📂 Choisir un PDF",
+                color = Purple,
                 onClick = {
 
                     pdfLauncher.launch(
                         arrayOf("application/pdf")
                     )
-
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple
-                )
-            ) {
-
-                Text(
-                    text = "📂 Choisir un PDF",
-                    color = White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                }
+            )
 
             selectedPdf?.let {
 
@@ -1222,10 +1462,6 @@ fun PdfContent() {
                 )
 
                 if (pageCount > 0) {
-
-                    Spacer(
-                        modifier = Modifier.height(5.dp)
-                    )
 
                     Text(
                         text = "$pageCount page(s)",
@@ -1261,9 +1497,12 @@ fun PdfContent() {
                 ) {
 
                     Image(
-                        bitmap = bitmap.asImageBitmap(),
+                        bitmap =
+                            bitmap.asImageBitmap(),
+
                         contentDescription =
                             "Aperçu du plan PDF",
+
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(5.dp)
@@ -1274,7 +1513,15 @@ fun PdfContent() {
                     modifier = Modifier.height(15.dp)
                 )
 
-                Button(
+                PrimaryButton(
+                    text =
+                        if (isAnalyzing)
+                            "⏳ Analyse..."
+                        else
+                            "🔍 Analyser le plan",
+
+                    color = ElectricBlue,
+
                     onClick = {
 
                         if (selectedPdf != null) {
@@ -1312,7 +1559,7 @@ fun PdfContent() {
                                             "${result.pageCount} page(s)",
                                         detail =
                                             if (result.hasText)
-                                                "Texte et éléments électriques détectés"
+                                                "Texte et éléments détectés"
                                             else
                                                 "Aucun texte exploitable"
                                     )
@@ -1326,24 +1573,8 @@ fun PdfContent() {
 
                             isAnalyzing = false
                         }
-
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ElectricBlue
-                    )
-                ) {
-
-                    Text(
-                        text =
-                            if (isAnalyzing)
-                                "⏳ Analyse..."
-                            else
-                                "🔍 Analyser le plan",
-                        color = Navy,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                    }
+                )
             }
 
             analysisText?.let { text ->
@@ -1357,22 +1588,14 @@ fun PdfContent() {
                 )
             }
 
-            error?.let {
-
-                Spacer(
-                    modifier = Modifier.height(10.dp)
-                )
-
-                Text(
-                    text = it,
-                    color = Orange,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
+            ErrorText(error)
         }
     }
 }
+
+// ============================================================
+// PDF DETECTION
+// ============================================================
 
 data class ElectricalDetection(
     val lighting: Int,
@@ -1475,13 +1698,20 @@ fun buildPdfAnalysisText(
     originalText: String
 ): String {
 
-    val builder = StringBuilder()
+    val builder =
+        StringBuilder()
 
-    builder.append("📊 RÉSULTAT DE L'ANALYSE\n\n")
+    builder.append(
+        "📊 RÉSULTAT DE L'ANALYSE\n\n"
+    )
 
-    builder.append("📄 Pages : $pageCount\n\n")
+    builder.append(
+        "📄 Pages : $pageCount\n\n"
+    )
 
-    builder.append("⚡ Éléments détectés\n\n")
+    builder.append(
+        "⚡ Éléments détectés\n\n"
+    )
 
     builder.append(
         "💡 Éclairage : ${detection.lighting}\n"
@@ -1503,11 +1733,15 @@ fun buildPdfAnalysisText(
 
     if (detection.sections.isNotEmpty()) {
 
-        builder.append("📏 Sections détectées :\n")
+        builder.append(
+            "📏 Sections détectées :\n"
+        )
 
         detection.sections.forEach {
 
-            builder.append("• $it\n")
+            builder.append(
+                "• $it\n"
+            )
         }
 
     } else {
@@ -1555,6 +1789,10 @@ fun buildPdfAnalysisText(
     return builder.toString()
 }
 
+// ============================================================
+// PDF ANALYSIS CARD
+// ============================================================
+
 @Composable
 fun PdfAnalysisCard(
     text: String
@@ -1592,6 +1830,10 @@ fun PdfAnalysisCard(
         }
     }
 }
+
+// ============================================================
+// RESULT CARD
+// ============================================================
 
 @Composable
 fun ResultCard(
@@ -1642,6 +1884,160 @@ fun ResultCard(
     }
 }
 
+// ============================================================
+// PRIMARY BUTTON
+// ============================================================
+
+@Composable
+fun PrimaryButton(
+    text: String,
+    color: Color,
+    onClick: () -> Unit
+) {
+
+    Button(
+        onClick = onClick,
+
+        modifier = Modifier.fillMaxWidth(),
+
+        colors = ButtonDefaults.buttonColors(
+            containerColor = color,
+            contentColor = Navy
+        ),
+
+        shape = RoundedCornerShape(14.dp)
+    ) {
+
+        Text(
+            text = text,
+            color = Navy,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ============================================================
+// SECTION TITLE
+// ============================================================
+
+@Composable
+fun SectionTitle(
+    icon: String,
+    title: String
+) {
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Text(
+            text = icon,
+            fontSize = 25.sp
+        )
+
+        Spacer(
+            modifier = Modifier.width(10.dp)
+        )
+
+        Text(
+            text = title,
+            color = White,
+            fontSize = 17.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+// ============================================================
+// ERROR
+// ============================================================
+
+@Composable
+fun ErrorText(
+    error: String?
+) {
+
+    error?.let {
+
+        Text(
+            text = it,
+            color = Orange,
+            fontSize = 12.sp
+        )
+    }
+}
+
+// ============================================================
+// INFO CARD
+// ============================================================
+
+@Composable
+fun InfoCard(
+    title: String,
+    text: String
+) {
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Navy2
+        )
+    ) {
+
+        Column(
+            modifier = Modifier.padding(18.dp)
+        ) {
+
+            Text(
+                text = title,
+                color = Cyan,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                modifier = Modifier.height(7.dp)
+            )
+
+            Text(
+                text = text,
+                color = Gray,
+                fontSize = 12.sp,
+                lineHeight = 18.sp
+            )
+        }
+    }
+}
+
+// ============================================================
+// WARNING CARD
+// ============================================================
+
+@Composable
+fun WarningCard() {
+
+    Text(
+        text = "⚠️ Les résultats sont destinés au pré-dimensionnement et doivent être vérifiés selon les normes et les conditions réelles de l'installation.",
+
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Color(0xFF30250D),
+                RoundedCornerShape(16.dp)
+            )
+            .padding(15.dp),
+
+        color = Orange,
+        fontSize = 11.sp,
+        lineHeight = 16.sp
+    )
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+
 @Composable
 fun HistoryScreen() {
 
@@ -1653,6 +2049,7 @@ fun HistoryScreen() {
             .fillMaxSize()
             .background(Navy)
             .padding(18.dp),
+
         verticalArrangement =
             Arrangement.spacedBy(12.dp)
     ) {
@@ -1660,7 +2057,7 @@ fun HistoryScreen() {
         item {
 
             Spacer(
-                modifier = Modifier.height(12.dp)
+                modifier = Modifier.height(10.dp)
             )
 
             Text(
@@ -1681,14 +2078,9 @@ fun HistoryScreen() {
 
             item {
 
-                Text(
-                    text =
-                        "Aucun calcul enregistré.",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(30.dp),
-                    color = Gray,
-                    textAlign = TextAlign.Center
+                InfoCard(
+                    title = "Aucun historique",
+                    text = "Vos calculs apparaîtront ici automatiquement."
                 )
             }
 
@@ -1713,12 +2105,12 @@ fun HistoryScreen() {
                     onClick = {
                         ElecoraHistory.clear()
                     },
+
                     modifier = Modifier.fillMaxWidth()
                 ) {
 
                     Text(
-                        text =
-                            "Effacer l'historique",
+                        text = "Effacer l'historique",
                         color = Orange
                     )
                 }
@@ -1726,6 +2118,10 @@ fun HistoryScreen() {
         }
     }
 }
+
+// ============================================================
+// HISTORY CARD
+// ============================================================
 
 @Composable
 fun HistoryCard(
@@ -1745,8 +2141,7 @@ fun HistoryCard(
 
         Row(
             modifier = Modifier.padding(17.dp),
-            verticalAlignment =
-                Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Text(
@@ -1769,6 +2164,10 @@ fun HistoryCard(
                     fontWeight = FontWeight.Bold
                 )
 
+                Spacer(
+                    modifier = Modifier.height(3.dp)
+                )
+
                 Text(
                     text = detail,
                     color = Gray,
@@ -1786,6 +2185,10 @@ fun HistoryCard(
     }
 }
 
+// ============================================================
+// PROFILE
+// ============================================================
+
 @Composable
 fun ProfileScreen() {
 
@@ -1794,6 +2197,7 @@ fun ProfileScreen() {
             .fillMaxSize()
             .background(Navy)
             .padding(18.dp),
+
         verticalArrangement =
             Arrangement.spacedBy(14.dp)
     ) {
@@ -1801,7 +2205,7 @@ fun ProfileScreen() {
         item {
 
             Spacer(
-                modifier = Modifier.height(15.dp)
+                modifier = Modifier.height(10.dp)
             )
 
             Text(
@@ -1812,8 +2216,7 @@ fun ProfileScreen() {
             )
 
             Text(
-                text =
-                    "Configuration de votre assistant",
+                text = "Configuration de votre assistant",
                 color = Gray,
                 fontSize = 13.sp
             )
@@ -1841,7 +2244,7 @@ fun ProfileScreen() {
                     )
 
                     Spacer(
-                        modifier = Modifier.height(5.dp)
+                        modifier = Modifier.height(6.dp)
                     )
 
                     Text(
@@ -1869,8 +2272,7 @@ fun ProfileScreen() {
             SettingCard(
                 icon = "⚙️",
                 title = "Paramètres",
-                description =
-                    "Configuration de l'application"
+                description = "Configuration de l'application"
             )
         }
 
@@ -1879,8 +2281,7 @@ fun ProfileScreen() {
             SettingCard(
                 icon = "📐",
                 title = "Unités",
-                description =
-                    "A • V • W • mm² • m"
+                description = "A • V • W • mm² • m"
             )
         }
 
@@ -1889,12 +2290,15 @@ fun ProfileScreen() {
             SettingCard(
                 icon = "ℹ️",
                 title = "À propos",
-                description =
-                    "Elecora V2.0"
+                description = "Elecora V2.0"
             )
         }
     }
 }
+
+// ============================================================
+// SETTING CARD
+// ============================================================
 
 @Composable
 fun SettingCard(
@@ -1907,7 +2311,9 @@ fun SettingCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {},
+
         shape = RoundedCornerShape(18.dp),
+
         colors = CardDefaults.cardColors(
             containerColor = Navy2
         )
@@ -1915,8 +2321,7 @@ fun SettingCard(
 
         Row(
             modifier = Modifier.padding(17.dp),
-            verticalAlignment =
-                Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Text(
