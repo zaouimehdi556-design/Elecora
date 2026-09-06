@@ -427,35 +427,27 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Text(
-                        text = "💡",
-                        fontSize = 30.sp
+                                        Text(
+                        text = "⚡ Elecora",
+                        color = Cyan,
+                        fontWeight = FontWeight.Bold
                     )
-
-                    Spacer(modifier = Modifier.width(14.dp))
-
-                    Column {
-
-                        Text(
-                            text = "Un bon calcul aujourd'hui",
-                            color = White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-
-                        Text(
-                            text = "évite un problème demain.",
-                            color = Gray,
-                            fontSize = 12.sp
-                        )
-
-                        Spacer(modifier = Modifier.height(5.dp))
-
-                        Text(
-                            text = "⚡ Elecora",
-                            color = Cyan,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
                 }
             }
+        }
+    }
+
+    item {
+        Text(
+            text = "Elecora • Version 1.0",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            color = Color(0xFF607890),
+            fontSize = 11.sp,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(15.dp))
+    }
+}
