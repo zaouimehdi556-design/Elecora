@@ -1,6 +1,9 @@
 package com.elecora.app
 
 import android.os.Bundle
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -911,6 +914,28 @@ fun BreakerContent() {
 @Composable
 fun PdfContent() {
 
+    var selectedPdf by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val pdfLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+
+        if (uri != null) {
+            selectedPdf = uri
+
+            ElecoraHistory.add(
+                HistoryItem(
+                    icon = "📄",
+                    title = "Analyse PDF",
+                    result = "PDF sélectionné",
+                    detail = "Plan électrique prêt pour analyse"
+                )
+            )
+        }
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
@@ -944,11 +969,62 @@ fun PdfContent() {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "La sélection PDF sera ajoutée dans l'étape suivante.",
+                text = "Sélectionnez un plan électrique au format PDF.",
                 color = Gray,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center
             )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Button(
+                onClick = {
+                    pdfLauncher.launch(
+                        arrayOf("application/pdf")
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Purple
+                )
+            ) {
+
+                Text(
+                    text = "📂 Choisir un fichier PDF",
+                    color = White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            selectedPdf?.let {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ResultCard(
+                    title = "Fichier sélectionné",
+                    value = "✓ PDF prêt",
+                    description = "Le plan est chargé et prêt pour l'étape d'analyse."
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Button(
+                    onClick = {
+                        // Analyse intelligente du PDF — prochaine étape
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ElectricBlue
+                    )
+                ) {
+
+                    Text(
+                        text = "🔍 Analyser le plan",
+                        color = Navy,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }
