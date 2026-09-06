@@ -2,16 +2,14 @@ package com.elecora.app
 
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
-import android.os.ParcelFileDescriptor
-import androidx.compose.foundation.Image
-import androidx.compose.ui.graphics.asImageBitmap
-import java.io.File
-import android.os.Bundle
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +20,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +31,7 @@ import com.elecora.app.calculator.ElectricalCalculations
 import com.elecora.app.calculator.PhaseType
 import com.elecora.app.data.ElecoraHistory
 import com.elecora.app.data.HistoryItem
+import java.io.File
 
 val Navy = Color(0xFF06182B)
 val Navy2 = Color(0xFF0A2340)
@@ -191,6 +192,7 @@ fun HomeScreen(
         }
 
         item {
+
             Text(
                 text = "Outils principaux",
                 color = White,
@@ -200,6 +202,7 @@ fun HomeScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "⚡",
                 title = "Chute de tension",
@@ -212,6 +215,7 @@ fun HomeScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "🔌",
                 title = "Section de câble",
@@ -224,6 +228,7 @@ fun HomeScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "🛡️",
                 title = "Calibre disjoncteur",
@@ -236,6 +241,7 @@ fun HomeScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "📄",
                 title = "Analyse PDF",
@@ -277,7 +283,9 @@ fun ToolCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = CardBlue
@@ -346,30 +354,66 @@ fun BottomNavigationBar(
 
         NavigationBarItem(
             selected = selected == "Accueil",
-            onClick = { onSelected("Accueil") },
-            icon = { Text("⌂", fontSize = 22.sp) },
-            label = { Text("Accueil") }
+            onClick = {
+                onSelected("Accueil")
+            },
+            icon = {
+                Text(
+                    "⌂",
+                    fontSize = 22.sp
+                )
+            },
+            label = {
+                Text("Accueil")
+            }
         )
 
         NavigationBarItem(
             selected = selected == "Outils",
-            onClick = { onSelected("Outils") },
-            icon = { Text("⚙", fontSize = 20.sp) },
-            label = { Text("Outils") }
+            onClick = {
+                onSelected("Outils")
+            },
+            icon = {
+                Text(
+                    "⚙",
+                    fontSize = 20.sp
+                )
+            },
+            label = {
+                Text("Outils")
+            }
         )
 
         NavigationBarItem(
             selected = selected == "Historique",
-            onClick = { onSelected("Historique") },
-            icon = { Text("◷", fontSize = 22.sp) },
-            label = { Text("Historique") }
+            onClick = {
+                onSelected("Historique")
+            },
+            icon = {
+                Text(
+                    "◷",
+                    fontSize = 22.sp
+                )
+            },
+            label = {
+                Text("Historique")
+            }
         )
 
         NavigationBarItem(
             selected = selected == "Profil",
-            onClick = { onSelected("Profil") },
-            icon = { Text("●", fontSize = 18.sp) },
-            label = { Text("Profil") }
+            onClick = {
+                onSelected("Profil")
+            },
+            icon = {
+                Text(
+                    "●",
+                    fontSize = 18.sp
+                )
+            },
+            label = {
+                Text("Profil")
+            }
         )
     }
 }
@@ -406,6 +450,7 @@ fun ToolsScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "⚡",
                 title = "Chute de tension",
@@ -418,6 +463,7 @@ fun ToolsScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "🔌",
                 title = "Section de câble",
@@ -430,6 +476,7 @@ fun ToolsScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "🛡️",
                 title = "Calibre disjoncteur",
@@ -442,6 +489,7 @@ fun ToolsScreen(
         }
 
         item {
+
             ToolCard(
                 icon = "📄",
                 title = "Analyse PDF",
@@ -477,7 +525,10 @@ fun ToolScreen(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                TextButton(onClick = onBack) {
+                TextButton(
+                    onClick = onBack
+                ) {
+
                     Text(
                         text = "← Retour",
                         color = Cyan
@@ -545,8 +596,12 @@ fun ElecoraInput(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(label) },
-        placeholder = { Text(placeholder) },
+        label = {
+            Text(label)
+        },
+        placeholder = {
+            Text(placeholder)
+        },
         singleLine = true
     )
 }
@@ -570,7 +625,9 @@ fun ChoiceRow(
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(
+            modifier = Modifier.height(6.dp)
+        )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -579,13 +636,17 @@ fun ChoiceRow(
             FilterChip(
                 selected = selectedFirst,
                 onClick = onFirst,
-                label = { Text(first) }
+                label = {
+                    Text(first)
+                }
             )
 
             FilterChip(
                 selected = !selectedFirst,
                 onClick = onSecond,
-                label = { Text(second) }
+                label = {
+                    Text(second)
+                }
             )
         }
     }
@@ -594,16 +655,37 @@ fun ChoiceRow(
 @Composable
 fun VoltageDropContent() {
 
-    var current by remember { mutableStateOf("") }
-    var length by remember { mutableStateOf("") }
-    var section by remember { mutableStateOf("") }
-    var cosPhi by remember { mutableStateOf("0.90") }
+    var current by remember {
+        mutableStateOf("")
+    }
 
-    var phase by remember { mutableStateOf(PhaseType.SINGLE) }
-    var material by remember { mutableStateOf(Conductor.COPPER) }
+    var length by remember {
+        mutableStateOf("")
+    }
 
-    var result by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var section by remember {
+        mutableStateOf("")
+    }
+
+    var cosPhi by remember {
+        mutableStateOf("0.90")
+    }
+
+    var phase by remember {
+        mutableStateOf(PhaseType.SINGLE)
+    }
+
+    var material by remember {
+        mutableStateOf(Conductor.COPPER)
+    }
+
+    var result by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -638,28 +720,36 @@ fun VoltageDropContent() {
         ElecoraInput(
             label = "Courant (A)",
             value = current,
-            onValueChange = { current = it },
+            onValueChange = {
+                current = it
+            },
             placeholder = "Ex: 20"
         )
 
         ElecoraInput(
             label = "Longueur (m)",
             value = length,
-            onValueChange = { length = it },
+            onValueChange = {
+                length = it
+            },
             placeholder = "Ex: 30"
         )
 
         ElecoraInput(
             label = "Section (mm²)",
             value = section,
-            onValueChange = { section = it },
+            onValueChange = {
+                section = it
+            },
             placeholder = "Ex: 4"
         )
 
         ElecoraInput(
             label = "Cos φ",
             value = cosPhi,
-            onValueChange = { cosPhi = it },
+            onValueChange = {
+                cosPhi = it
+            },
             placeholder = "Ex: 0.90"
         )
 
@@ -677,6 +767,7 @@ fun VoltageDropContent() {
                     )
 
                 val calculated = calculation.first
+
                 error = calculation.second
 
                 if (calculated != null) {
@@ -692,18 +783,20 @@ fun VoltageDropContent() {
                         HistoryItem(
                             icon = "⚡",
                             title = "Chute de tension",
-                            result = "%.2f %%".format(calculated.percent),
-                            detail = "ΔU = %.2f V".format(calculated.volts)
+                            result = "%.2f %%"
+                                .format(calculated.percent),
+                            detail = "ΔU = %.2f V"
+                                .format(calculated.volts)
                         )
                     )
                 }
-
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = ElectricBlue
             )
         ) {
+
             Text(
                 text = "Calculer",
                 color = Navy,
@@ -712,6 +805,7 @@ fun VoltageDropContent() {
         }
 
         error?.let {
+
             Text(
                 text = it,
                 color = Orange
@@ -719,6 +813,7 @@ fun VoltageDropContent() {
         }
 
         result?.let {
+
             ResultCard(
                 title = "Résultat",
                 value = it,
@@ -731,13 +826,29 @@ fun VoltageDropContent() {
 @Composable
 fun CableSectionContent() {
 
-    var current by remember { mutableStateOf("") }
-    var length by remember { mutableStateOf("") }
-    var cosPhi by remember { mutableStateOf("0.90") }
-    var maxDrop by remember { mutableStateOf("5") }
+    var current by remember {
+        mutableStateOf("")
+    }
 
-    var result by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var length by remember {
+        mutableStateOf("")
+    }
+
+    var cosPhi by remember {
+        mutableStateOf("0.90")
+    }
+
+    var maxDrop by remember {
+        mutableStateOf("5")
+    }
+
+    var result by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -746,28 +857,36 @@ fun CableSectionContent() {
         ElecoraInput(
             label = "Courant (A)",
             value = current,
-            onValueChange = { current = it },
+            onValueChange = {
+                current = it
+            },
             placeholder = "Ex: 25"
         )
 
         ElecoraInput(
             label = "Longueur (m)",
             value = length,
-            onValueChange = { length = it },
+            onValueChange = {
+                length = it
+            },
             placeholder = "Ex: 40"
         )
 
         ElecoraInput(
             label = "Cos φ",
             value = cosPhi,
-            onValueChange = { cosPhi = it },
+            onValueChange = {
+                cosPhi = it
+            },
             placeholder = "Ex: 0.90"
         )
 
         ElecoraInput(
             label = "Chute maximale (%)",
             value = maxDrop,
-            onValueChange = { maxDrop = it },
+            onValueChange = {
+                maxDrop = it
+            },
             placeholder = "Ex: 5"
         )
 
@@ -785,6 +904,7 @@ fun CableSectionContent() {
                     )
 
                 val calculated = calculation.first
+
                 error = calculation.second
 
                 if (calculated != null) {
@@ -797,19 +917,20 @@ fun CableSectionContent() {
                             icon = "🔌",
                             title = "Section de câble",
                             result = "${calculated.section} mm²",
-                            detail = "ΔU = %.2f %%".format(
-                                calculated.voltageDropPercent
-                            )
+                            detail = "ΔU = %.2f %%"
+                                .format(
+                                    calculated.voltageDropPercent
+                                )
                         )
                     )
                 }
-
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Green
             )
         ) {
+
             Text(
                 text = "Dimensionner",
                 color = Navy,
@@ -818,6 +939,7 @@ fun CableSectionContent() {
         }
 
         error?.let {
+
             Text(
                 text = it,
                 color = Orange
@@ -825,6 +947,7 @@ fun CableSectionContent() {
         }
 
         result?.let {
+
             ResultCard(
                 title = "Section recommandée",
                 value = it,
@@ -837,11 +960,21 @@ fun CableSectionContent() {
 @Composable
 fun BreakerContent() {
 
-    var current by remember { mutableStateOf("") }
-    var cableAmpacity by remember { mutableStateOf("") }
+    var current by remember {
+        mutableStateOf("")
+    }
 
-    var result by remember { mutableStateOf<String?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var cableAmpacity by remember {
+        mutableStateOf("")
+    }
+
+    var result by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var error by remember {
+        mutableStateOf<String?>(null)
+    }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -850,14 +983,18 @@ fun BreakerContent() {
         ElecoraInput(
             label = "Courant Ib (A)",
             value = current,
-            onValueChange = { current = it },
+            onValueChange = {
+                current = it
+            },
             placeholder = "Ex: 27"
         )
 
         ElecoraInput(
             label = "Courant admissible Iz (A)",
             value = cableAmpacity,
-            onValueChange = { cableAmpacity = it },
+            onValueChange = {
+                cableAmpacity = it
+            },
             placeholder = "Ex: 32"
         )
 
@@ -867,15 +1004,18 @@ fun BreakerContent() {
                 val calculation =
                     ElectricalCalculations.breaker(
                         current = current.toDoubleOrNull(),
-                        cableAmpacity = cableAmpacity.toDoubleOrNull()
+                        cableAmpacity =
+                            cableAmpacity.toDoubleOrNull()
                     )
 
                 val calculated = calculation.first
+
                 error = calculation.second
 
                 if (calculated != null) {
 
-                    result = "${calculated.rating} A"
+                    result =
+                        "${calculated.rating} A"
 
                     ElecoraHistory.add(
                         HistoryItem(
@@ -886,13 +1026,13 @@ fun BreakerContent() {
                         )
                     )
                 }
-
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Orange
             )
         ) {
+
             Text(
                 text = "Calculer le calibre",
                 color = Navy,
@@ -901,6 +1041,7 @@ fun BreakerContent() {
         }
 
         error?.let {
+
             Text(
                 text = it,
                 color = Orange
@@ -908,6 +1049,7 @@ fun BreakerContent() {
         }
 
         result?.let {
+
             ResultCard(
                 title = "Calibre conseillé",
                 value = it,
@@ -917,6 +1059,13 @@ fun BreakerContent() {
     }
 }
 
+/*
+ * Rend la première page d'un PDF en image.
+ *
+ * Retourne:
+ * - Bitmap de la première page
+ * - nombre total de pages
+ */
 fun renderFirstPdfPage(
     uri: Uri,
     context: android.content.Context
@@ -929,12 +1078,14 @@ fun renderFirstPdfPage(
             "elecora_preview.pdf"
         )
 
-        context.contentResolver.openInputStream(uri)?.use { input ->
+        context.contentResolver
+            .openInputStream(uri)
+            ?.use { input ->
 
-            file.outputStream().use { output ->
-                input.copyTo(output)
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
             }
-        }
 
         val descriptor =
             ParcelFileDescriptor.open(
@@ -942,28 +1093,38 @@ fun renderFirstPdfPage(
                 ParcelFileDescriptor.MODE_READ_ONLY
             )
 
-        val renderer = PdfRenderer(descriptor)
+        val renderer =
+            PdfRenderer(descriptor)
 
-        val pageCount = renderer.pageCount
+        val pageCount =
+            renderer.pageCount
 
         if (pageCount == 0) {
+
             renderer.close()
             descriptor.close()
+
             return null to 0
         }
 
-        val page = renderer.openPage(0)
+        val page =
+            renderer.openPage(0)
 
         val width = 1200
-        val height =
-            (width.toFloat() * page.height / page.width)
-                .toInt()
 
-        val bitmap = Bitmap.createBitmap(
-            width,
-            height,
-            Bitmap.Config.ARGB_8888
-        )
+        val height =
+            (
+                width.toFloat() *
+                    page.height /
+                    page.width
+            ).toInt()
+
+        val bitmap =
+            Bitmap.createBitmap(
+                width,
+                height,
+                Bitmap.Config.ARGB_8888
+            )
 
         bitmap.eraseColor(
             android.graphics.Color.WHITE
@@ -987,10 +1148,12 @@ fun renderFirstPdfPage(
         null to 0
     }
 }
+
 @Composable
 fun PdfContent() {
 
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context =
+        LocalContext.current
 
     var selectedPdf by remember {
         mutableStateOf<Uri?>(null)
@@ -1010,7 +1173,8 @@ fun PdfContent() {
 
     val pdfLauncher =
         rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.OpenDocument()
+            contract =
+                ActivityResultContracts.OpenDocument()
         ) { uri: Uri? ->
 
             if (uri != null) {
@@ -1028,7 +1192,9 @@ fun PdfContent() {
                 pageCount = result.second
 
                 if (result.second == 0) {
-                    error = "Impossible de lire ce fichier PDF."
+
+                    error =
+                        "Impossible de lire ce fichier PDF."
                 }
             }
         }
@@ -1045,7 +1211,8 @@ fun PdfContent() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment =
+                Alignment.CenterHorizontally
         ) {
 
             Text(
@@ -1070,7 +1237,8 @@ fun PdfContent() {
             )
 
             Text(
-                text = "Sélectionnez votre plan PDF pour commencer.",
+                text =
+                    "Sélectionnez votre plan PDF pour commencer.",
                 color = Gray,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center
@@ -1155,7 +1323,8 @@ fun PdfContent() {
 
                     Image(
                         bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "Aperçu du plan PDF",
+                        contentDescription =
+                            "Aperçu du plan PDF",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(5.dp)
@@ -1200,8 +1369,6 @@ fun PdfContent() {
         }
     }
 }
-    }
-}
 
 @Composable
 fun ResultCard(
@@ -1228,7 +1395,9 @@ fun ResultCard(
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(
+                modifier = Modifier.height(6.dp)
+            )
 
             Text(
                 text = value,
@@ -1237,7 +1406,9 @@ fun ResultCard(
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(
+                modifier = Modifier.height(5.dp)
+            )
 
             Text(
                 text = description,
@@ -1251,19 +1422,23 @@ fun ResultCard(
 @Composable
 fun HistoryScreen() {
 
-    val history = ElecoraHistory.items
+    val history =
+        ElecoraHistory.items
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(Navy)
             .padding(18.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement =
+            Arrangement.spacedBy(12.dp)
     ) {
 
         item {
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
 
             Text(
                 text = "Historique",
@@ -1284,7 +1459,8 @@ fun HistoryScreen() {
             item {
 
                 Text(
-                    text = "Aucun calcul enregistré.",
+                    text =
+                        "Aucun calcul enregistré.",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(30.dp),
@@ -1297,7 +1473,8 @@ fun HistoryScreen() {
 
             items(history.size) { index ->
 
-                val item = history[index]
+                val item =
+                    history[index]
 
                 HistoryCard(
                     icon = item.icon,
@@ -1317,7 +1494,8 @@ fun HistoryScreen() {
                 ) {
 
                     Text(
-                        text = "Effacer l'historique",
+                        text =
+                            "Effacer l'historique",
                         color = Orange
                     )
                 }
@@ -1344,7 +1522,8 @@ fun HistoryCard(
 
         Row(
             modifier = Modifier.padding(17.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment =
+                Alignment.CenterVertically
         ) {
 
             Text(
@@ -1352,7 +1531,9 @@ fun HistoryCard(
                 fontSize = 28.sp
             )
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(
+                modifier = Modifier.width(14.dp)
+            )
 
             Column(
                 modifier = Modifier.weight(1f)
@@ -1390,12 +1571,15 @@ fun ProfileScreen() {
             .fillMaxSize()
             .background(Navy)
             .padding(18.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement =
+            Arrangement.spacedBy(14.dp)
     ) {
 
         item {
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(
+                modifier = Modifier.height(15.dp)
+            )
 
             Text(
                 text = "Profil",
@@ -1405,7 +1589,8 @@ fun ProfileScreen() {
             )
 
             Text(
-                text = "Configuration de votre assistant",
+                text =
+                    "Configuration de votre assistant",
                 color = Gray,
                 fontSize = 13.sp
             )
@@ -1432,15 +1617,20 @@ fun ProfileScreen() {
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(
+                        modifier = Modifier.height(5.dp)
+                    )
 
                     Text(
-                        text = "Assistant professionnel • Électricité bâtiment",
+                        text =
+                            "Assistant professionnel • Électricité bâtiment",
                         color = Gray,
                         fontSize = 12.sp
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
 
                     Text(
                         text = "Version 2.0",
@@ -1452,26 +1642,32 @@ fun ProfileScreen() {
         }
 
         item {
+
             SettingCard(
                 icon = "⚙️",
                 title = "Paramètres",
-                description = "Configuration de l'application"
+                description =
+                    "Configuration de l'application"
             )
         }
 
         item {
+
             SettingCard(
                 icon = "📐",
                 title = "Unités",
-                description = "A • V • W • mm² • m"
+                description =
+                    "A • V • W • mm² • m"
             )
         }
 
         item {
+
             SettingCard(
                 icon = "ℹ️",
                 title = "À propos",
-                description = "Elecora V2.0"
+                description =
+                    "Elecora V2.0"
             )
         }
     }
@@ -1496,7 +1692,8 @@ fun SettingCard(
 
         Row(
             modifier = Modifier.padding(17.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment =
+                Alignment.CenterVertically
         ) {
 
             Text(
@@ -1504,7 +1701,9 @@ fun SettingCard(
                 fontSize = 25.sp
             )
 
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(
+                modifier = Modifier.width(14.dp)
+            )
 
             Column(
                 modifier = Modifier.weight(1f)
