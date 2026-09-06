@@ -31,6 +31,7 @@ import com.elecora.app.calculator.ElectricalCalculations
 import com.elecora.app.calculator.PhaseType
 import com.elecora.app.data.ElecoraHistory
 import com.elecora.app.data.HistoryItem
+import com.elecora.app.pdf.PdfAnalyzer
 import java.io.File
 
 val Navy = Color(0xFF06182B)
@@ -655,21 +656,10 @@ fun ChoiceRow(
 @Composable
 fun VoltageDropContent() {
 
-    var current by remember {
-        mutableStateOf("")
-    }
-
-    var length by remember {
-        mutableStateOf("")
-    }
-
-    var section by remember {
-        mutableStateOf("")
-    }
-
-    var cosPhi by remember {
-        mutableStateOf("0.90")
-    }
+    var current by remember { mutableStateOf("") }
+    var length by remember { mutableStateOf("") }
+    var section by remember { mutableStateOf("") }
+    var cosPhi by remember { mutableStateOf("0.90") }
 
     var phase by remember {
         mutableStateOf(PhaseType.SINGLE)
@@ -679,13 +669,8 @@ fun VoltageDropContent() {
         mutableStateOf(Conductor.COPPER)
     }
 
-    var result by remember {
-        mutableStateOf<String?>(null)
-    }
-
-    var error by remember {
-        mutableStateOf<String?>(null)
-    }
+    var result by remember { mutableStateOf<String?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -720,36 +705,28 @@ fun VoltageDropContent() {
         ElecoraInput(
             label = "Courant (A)",
             value = current,
-            onValueChange = {
-                current = it
-            },
+            onValueChange = { current = it },
             placeholder = "Ex: 20"
         )
 
         ElecoraInput(
             label = "Longueur (m)",
             value = length,
-            onValueChange = {
-                length = it
-            },
+            onValueChange = { length = it },
             placeholder = "Ex: 30"
         )
 
         ElecoraInput(
             label = "Section (mm²)",
             value = section,
-            onValueChange = {
-                section = it
-            },
+            onValueChange = { section = it },
             placeholder = "Ex: 4"
         )
 
         ElecoraInput(
             label = "Cos φ",
             value = cosPhi,
-            onValueChange = {
-                cosPhi = it
-            },
+            onValueChange = { cosPhi = it },
             placeholder = "Ex: 0.90"
         )
 
@@ -826,29 +803,13 @@ fun VoltageDropContent() {
 @Composable
 fun CableSectionContent() {
 
-    var current by remember {
-        mutableStateOf("")
-    }
+    var current by remember { mutableStateOf("") }
+    var length by remember { mutableStateOf("") }
+    var cosPhi by remember { mutableStateOf("0.90") }
+    var maxDrop by remember { mutableStateOf("5") }
 
-    var length by remember {
-        mutableStateOf("")
-    }
-
-    var cosPhi by remember {
-        mutableStateOf("0.90")
-    }
-
-    var maxDrop by remember {
-        mutableStateOf("5")
-    }
-
-    var result by remember {
-        mutableStateOf<String?>(null)
-    }
-
-    var error by remember {
-        mutableStateOf<String?>(null)
-    }
+    var result by remember { mutableStateOf<String?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -857,36 +818,28 @@ fun CableSectionContent() {
         ElecoraInput(
             label = "Courant (A)",
             value = current,
-            onValueChange = {
-                current = it
-            },
+            onValueChange = { current = it },
             placeholder = "Ex: 25"
         )
 
         ElecoraInput(
             label = "Longueur (m)",
             value = length,
-            onValueChange = {
-                length = it
-            },
+            onValueChange = { length = it },
             placeholder = "Ex: 40"
         )
 
         ElecoraInput(
             label = "Cos φ",
             value = cosPhi,
-            onValueChange = {
-                cosPhi = it
-            },
+            onValueChange = { cosPhi = it },
             placeholder = "Ex: 0.90"
         )
 
         ElecoraInput(
             label = "Chute maximale (%)",
             value = maxDrop,
-            onValueChange = {
-                maxDrop = it
-            },
+            onValueChange = { maxDrop = it },
             placeholder = "Ex: 5"
         )
 
@@ -909,8 +862,7 @@ fun CableSectionContent() {
 
                 if (calculated != null) {
 
-                    result =
-                        "${calculated.section} mm²"
+                    result = "${calculated.section} mm²"
 
                     ElecoraHistory.add(
                         HistoryItem(
@@ -960,21 +912,11 @@ fun CableSectionContent() {
 @Composable
 fun BreakerContent() {
 
-    var current by remember {
-        mutableStateOf("")
-    }
+    var current by remember { mutableStateOf("") }
+    var cableAmpacity by remember { mutableStateOf("") }
 
-    var cableAmpacity by remember {
-        mutableStateOf("")
-    }
-
-    var result by remember {
-        mutableStateOf<String?>(null)
-    }
-
-    var error by remember {
-        mutableStateOf<String?>(null)
-    }
+    var result by remember { mutableStateOf<String?>(null) }
+    var error by remember { mutableStateOf<String?>(null) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -983,18 +925,14 @@ fun BreakerContent() {
         ElecoraInput(
             label = "Courant Ib (A)",
             value = current,
-            onValueChange = {
-                current = it
-            },
+            onValueChange = { current = it },
             placeholder = "Ex: 27"
         )
 
         ElecoraInput(
             label = "Courant admissible Iz (A)",
             value = cableAmpacity,
-            onValueChange = {
-                cableAmpacity = it
-            },
+            onValueChange = { cableAmpacity = it },
             placeholder = "Ex: 32"
         )
 
@@ -1014,8 +952,7 @@ fun BreakerContent() {
 
                 if (calculated != null) {
 
-                    result =
-                        "${calculated.rating} A"
+                    result = "${calculated.rating} A"
 
                     ElecoraHistory.add(
                         HistoryItem(
@@ -1053,19 +990,13 @@ fun BreakerContent() {
             ResultCard(
                 title = "Calibre conseillé",
                 value = it,
-                description = "Vérifier la protection et la capacité de coupure"
+                description =
+                    "Vérifier la protection et la capacité de coupure"
             )
         }
     }
 }
 
-/*
- * Rend la première page d'un PDF en image.
- *
- * Retourne:
- * - Bitmap de la première page
- * - nombre total de pages
- */
 fun renderFirstPdfPage(
     uri: Uri,
     context: android.content.Context
@@ -1152,8 +1083,7 @@ fun renderFirstPdfPage(
 @Composable
 fun PdfContent() {
 
-    val context =
-        LocalContext.current
+    val context = LocalContext.current
 
     var selectedPdf by remember {
         mutableStateOf<Uri?>(null)
@@ -1171,6 +1101,14 @@ fun PdfContent() {
         mutableStateOf<String?>(null)
     }
 
+    var analysisText by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var isAnalyzing by remember {
+        mutableStateOf(false)
+    }
+
     val pdfLauncher =
         rememberLauncherForActivityResult(
             contract =
@@ -1181,6 +1119,7 @@ fun PdfContent() {
 
                 selectedPdf = uri
                 error = null
+                analysisText = null
 
                 val result =
                     renderFirstPdfPage(
@@ -1337,7 +1276,57 @@ fun PdfContent() {
 
                 Button(
                     onClick = {
-                        // Analyse intelligente — Step 6B
+
+                        if (selectedPdf != null) {
+
+                            isAnalyzing = true
+                            error = null
+                            analysisText = null
+
+                            try {
+
+                                val result =
+                                    PdfAnalyzer.analyze(
+                                        context = context,
+                                        uri = selectedPdf!!
+                                    )
+
+                                val detected =
+                                    detectElectricalElements(
+                                        result.extractedText
+                                    )
+
+                                analysisText =
+                                    buildPdfAnalysisText(
+                                        result.pageCount,
+                                        result.hasText,
+                                        detected,
+                                        result.extractedText
+                                    )
+
+                                ElecoraHistory.add(
+                                    HistoryItem(
+                                        icon = "📄",
+                                        title = "Analyse PDF",
+                                        result =
+                                            "${result.pageCount} page(s)",
+                                        detail =
+                                            if (result.hasText)
+                                                "Texte et éléments électriques détectés"
+                                            else
+                                                "Aucun texte exploitable"
+                                    )
+                                )
+
+                            } catch (e: Exception) {
+
+                                error =
+                                    "Erreur pendant l'analyse du PDF."
+                            }
+
+                            isAnalyzing = false
+                        }
+
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -1346,11 +1335,26 @@ fun PdfContent() {
                 ) {
 
                     Text(
-                        text = "🔍 Analyser le plan",
+                        text =
+                            if (isAnalyzing)
+                                "⏳ Analyse..."
+                            else
+                                "🔍 Analyser le plan",
                         color = Navy,
                         fontWeight = FontWeight.Bold
                     )
                 }
+            }
+
+            analysisText?.let { text ->
+
+                Spacer(
+                    modifier = Modifier.height(18.dp)
+                )
+
+                PdfAnalysisCard(
+                    text = text
+                )
             }
 
             error?.let {
@@ -1366,6 +1370,225 @@ fun PdfContent() {
                     textAlign = TextAlign.Center
                 )
             }
+        }
+    }
+}
+
+data class ElectricalDetection(
+    val lighting: Int,
+    val sockets: Int,
+    val breakers: Int,
+    val cables: Int,
+    val sections: List<String>
+)
+
+fun detectElectricalElements(
+    text: String
+): ElectricalDetection {
+
+    val normalized =
+        text.lowercase()
+
+    fun countWords(
+        words: List<String>
+    ): Int {
+
+        return words.sumOf { word ->
+
+            Regex(
+                Regex.escape(word)
+            ).findAll(normalized).count()
+        }
+    }
+
+    val lighting =
+        countWords(
+            listOf(
+                "éclairage",
+                "eclairage",
+                "lighting",
+                "luminaire",
+                "lampe",
+                "light"
+            )
+        )
+
+    val sockets =
+        countWords(
+            listOf(
+                "prise",
+                "prises",
+                "socket",
+                "power outlet"
+            )
+        )
+
+    val breakers =
+        countWords(
+            listOf(
+                "disjoncteur",
+                "breaker",
+                "mcb",
+                "dij"
+            )
+        )
+
+    val cables =
+        countWords(
+            listOf(
+                "câble",
+                "cable",
+                "conducteur",
+                "conductor"
+            )
+        )
+
+    val sectionRegex =
+        Regex(
+            """\b\d+(?:[.,]\d+)?\s*mm(?:²|2)\b"""
+        )
+
+    val sections =
+        sectionRegex
+            .findAll(normalized)
+            .map {
+                it.value
+                    .replace(",", ".")
+                    .replace(" ", "")
+            }
+            .distinct()
+            .toList()
+
+    return ElectricalDetection(
+        lighting = lighting,
+        sockets = sockets,
+        breakers = breakers,
+        cables = cables,
+        sections = sections
+    )
+}
+
+fun buildPdfAnalysisText(
+    pageCount: Int,
+    hasText: Boolean,
+    detection: ElectricalDetection,
+    originalText: String
+): String {
+
+    val builder = StringBuilder()
+
+    builder.append("📊 RÉSULTAT DE L'ANALYSE\n\n")
+
+    builder.append("📄 Pages : $pageCount\n\n")
+
+    builder.append("⚡ Éléments détectés\n\n")
+
+    builder.append(
+        "💡 Éclairage : ${detection.lighting}\n"
+    )
+
+    builder.append(
+        "🔌 Prises : ${detection.sockets}\n"
+    )
+
+    builder.append(
+        "🛡️ Disjoncteurs : ${detection.breakers}\n"
+    )
+
+    builder.append(
+        "🔗 Câbles / conducteurs : ${detection.cables}\n"
+    )
+
+    builder.append("\n")
+
+    if (detection.sections.isNotEmpty()) {
+
+        builder.append("📏 Sections détectées :\n")
+
+        detection.sections.forEach {
+
+            builder.append("• $it\n")
+        }
+
+    } else {
+
+        builder.append(
+            "📏 Sections détectées : aucune\n"
+        )
+    }
+
+    builder.append("\n")
+
+    if (!hasText) {
+
+        builder.append(
+            "⚠️ Aucun texte exploitable n'a été trouvé.\n"
+        )
+
+        builder.append(
+            "Ce PDF peut être un plan scanné ou composé principalement d'images.\n"
+        )
+
+    } else {
+
+        builder.append(
+            "📝 Texte extrait :\n\n"
+        )
+
+        val preview =
+            originalText.take(3000)
+
+        builder.append(preview)
+
+        if (originalText.length > 3000) {
+
+            builder.append(
+                "\n\n… texte tronqué dans l'affichage."
+            )
+        }
+    }
+
+    builder.append(
+        "\n\n⚠️ Cette analyse est une pré-analyse automatique. Elle ne remplace pas la vérification du plan par un professionnel."
+    )
+
+    return builder.toString()
+}
+
+@Composable
+fun PdfAnalysisCard(
+    text: String
+) {
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = CardBlue
+        )
+    ) {
+
+        Column(
+            modifier = Modifier.padding(18.dp)
+        ) {
+
+            Text(
+                text = "🔎 Analyse Elecora",
+                color = Cyan,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
+            Text(
+                text = text,
+                color = White,
+                fontSize = 12.sp,
+                lineHeight = 18.sp
+            )
         }
     }
 }
